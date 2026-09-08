@@ -1,0 +1,239 @@
+{
+  "version": "4.0",
+  "status": "Proposta para teste em mesa; mantém a escala numérica da V3.",
+  "source": "https://canva.link/0y5v70f09yelr1f",
+  "tiers": [
+    {
+      "tier": 1,
+      "min": 1,
+      "max": 2,
+      "points": 6,
+      "dice": 2,
+      "sides": 6,
+      "targets": 2,
+      "fixed": 2
+    },
+    {
+      "tier": 2,
+      "min": 3,
+      "max": 4,
+      "points": 9,
+      "dice": 3,
+      "sides": 8,
+      "targets": 3,
+      "fixed": 4
+    },
+    {
+      "tier": 3,
+      "min": 5,
+      "max": 6,
+      "points": 12,
+      "dice": 4,
+      "sides": 8,
+      "targets": 4,
+      "fixed": 6
+    },
+    {
+      "tier": 4,
+      "min": 7,
+      "max": 8,
+      "points": 15,
+      "dice": 5,
+      "sides": 10,
+      "targets": 5,
+      "fixed": 8
+    },
+    {
+      "tier": 5,
+      "min": 9,
+      "max": 10,
+      "points": 18,
+      "dice": 6,
+      "sides": 10,
+      "targets": 5,
+      "fixed": 10
+    }
+  ],
+  "effects": {
+    "damage": "Dano",
+    "heal": "Cura",
+    "barrier": "Barreira",
+    "control": "Controle",
+    "utility": "Utilidade",
+    "summon": "Invocação"
+  },
+  "controls": {
+    "none": {
+      "label": "Sem condição",
+      "points": 0,
+      "tier": 1
+    },
+    "slow": {
+      "label": "Lentidão · −3 m de movimento",
+      "points": 1,
+      "tier": 1
+    },
+    "push": {
+      "label": "Empurrão · 3 m",
+      "points": 1,
+      "tier": 1
+    },
+    "hinder": {
+      "label": "Desvantagem no próximo ataque",
+      "points": 2,
+      "tier": 1
+    },
+    "disarm": {
+      "label": "Desarmar · soltar um objeto empunhado",
+      "points": 2,
+      "tier": 1
+    },
+    "root": {
+      "label": "Imobilizar · movimento 0, ainda age",
+      "points": 3,
+      "tier": 2
+    },
+    "stun": {
+      "label": "Interromper · perde uma ação principal",
+      "points": 5,
+      "tier": 3
+    }
+  },
+  "utilities": {
+    "aid": {
+      "label": "Auxílio · +2 no próximo teste de uma perícia definida",
+      "points": 2,
+      "tier": 1
+    },
+    "thought": {
+      "label": "Eco mental · uma intenção superficial, com resistência",
+      "points": 3,
+      "tier": 2
+    },
+    "spirit": {
+      "label": "Escutar espírito · uma pergunta, resposta voluntária",
+      "points": 2,
+      "tier": 1
+    },
+    "light": {
+      "label": "Luz · ilumina até 6 m, sem cegar",
+      "points": 1,
+      "tier": 1
+    },
+    "sense": {
+      "label": "Sentir magia · presença a até 6 m, sem ler mente",
+      "points": 2,
+      "tier": 1
+    },
+    "object": {
+      "label": "Mover objeto · até 5 kg, 3 m, sem ferir",
+      "points": 1,
+      "tier": 1
+    },
+    "illusion": {
+      "label": "Ilusão · imagem/som até 2 m³, sem dano",
+      "points": 2,
+      "tier": 1
+    },
+    "step": {
+      "label": "Passo místico · 3 m até espaço visível livre",
+      "points": 3,
+      "tier": 2
+    },
+    "flight": {
+      "label": "Voo · 6 m, até 3 m de altura",
+      "points": 4,
+      "tier": 3
+    }
+  },
+  "ranges": {
+    "0": {
+      "label": "Pessoal",
+      "points": 0
+    },
+    "2": {
+      "label": "Toque · 2 m",
+      "points": 0
+    },
+    "6": {
+      "label": "Curto · 6 m",
+      "points": 1
+    },
+    "12": {
+      "label": "Médio · 12 m",
+      "points": 2
+    },
+    "24": {
+      "label": "Longo · 24 m",
+      "points": 3
+    }
+  },
+  "durations": {
+    "1": {
+      "label": "Imediato / até o próximo turno",
+      "points": 0
+    },
+    "3": {
+      "label": "Até 3 ciclos · concentração",
+      "points": 2
+    },
+    "5": {
+      "label": "Até 5 ciclos · concentração",
+      "points": 4
+    }
+  },
+  "actions": {
+    "main": {
+      "label": "Ação principal",
+      "points": 0
+    },
+    "bonus": {
+      "label": "Ação bônus",
+      "points": 2
+    },
+    "reaction": {
+      "label": "Reação",
+      "points": 2
+    }
+  },
+  "die_point_cost": {
+    "4": 1,
+    "6": 2,
+    "8": 3,
+    "10": 4
+  },
+  "veil_formula": "4 + ceil(max(0, PP - 6) / 3)",
+  "maintenance": {
+    "veil": 1,
+    "action": "bonus",
+    "maximum_concentrations": 1
+  },
+  "fixed_formula": "min(2 * tier, purchased_fixed + 2 * potency_rank); potency only for damage",
+  "resistance_formula": "12 + tier + min(3, floor(arcana_rank / 2))",
+  "damage_pool": "Shared across targets and cycles; never multiplied by projectile count.",
+  "range_bonus": "Mira OR Potência; only base range >= 6 m; capped at +6 m per tier; excludes summon.",
+  "combo": {
+    "maximum": 6,
+    "maximum_per_source": 3,
+    "identical_sources_stack": false
+  },
+  "stun": {
+    "minimum_tier": 3,
+    "targets": 1,
+    "duration": 1,
+    "damage": false,
+    "immunity_after_cycles": 2
+  },
+  "summon": {
+    "hp": "5 * tier",
+    "defense": "10 + tier",
+    "movement_m": 6,
+    "attack_range_m": 2,
+    "tether_m": 12,
+    "command_action": "main",
+    "own_actions": false,
+    "critical_damage": false
+  },
+  "legacy_rules_reference": "regras-v3.json",
+  "storage_key": "thaalemor_characters_v4"
+}
