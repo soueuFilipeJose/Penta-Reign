@@ -1,4 +1,4 @@
-/* Thaal'Emor V4 — regras propostas para teste em mesa. Sem dependências. */
+/* Penta-Reign V4 — regras propostas para teste em mesa. Sem dependências. */
 (function (root) {
   'use strict';
   const tiers = [

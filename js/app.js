@@ -2,6 +2,8 @@ const D = window.RPG_DATA;
 const $ = id => document.getElementById(id);
 const STORAGE_KEY = "thaalemor_characters_v4";
 const LEGACY_KEYS = ["thaalemor_characters_v3", "thaalemor_characters_v2"];
+// Preserve storage keys so the new page can open existing characters on the same origin.
+const VIEW_TITLES = {overview:"Identidade",skills:"Perícias",gifts:"Dons",combat:"Combate & Dados",content:"Anotações",library:"Personagens"};
 const state = {sourceVersion:"4.0",id:null, attributes:{}, skills:{}, gifts:[], portrait:"", rollLog:[], dirty:false};
 const slug = s => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\W+/g,"_").toLowerCase();
 const sign = n => `${n >= 0 ? "+" : ""}${n}`;
@@ -40,12 +42,30 @@ function init(){
     const group=document.createElement("section");group.className="skill-group";group.innerHTML=`<div class="skill-group-title"><span>${a.short}</span><h3>${a.label}</h3></div><div id="sg_${key}"></div>`;$("skillsContainer").appendChild(group);
     a.skills.forEach(name=>{state.skills[name]=0;$(`sg_${key}`).insertAdjacentHTML("beforeend",`<div class="skill-row"><div class="skill-name"><button type="button" data-roll-skill="${escapeHtml(name)}">${escapeHtml(name)}</button><small id="class_${slug(name)}">Classe +0</small></div><div class="stepper"><button type="button" data-skill-step="${escapeHtml(name)}" data-delta="-1" aria-label="Reduzir investimento em ${escapeHtml(name)}">−</button><input class="skill-input" data-skill="${escapeHtml(name)}" aria-label="Pontos investidos em ${escapeHtml(name)}" type="number" min="0" value="0"><button type="button" data-skill-step="${escapeHtml(name)}" data-delta="1" aria-label="Aumentar investimento em ${escapeHtml(name)}">+</button></div><div class="rank-display"><span>Grau</span><strong id="rank_${slug(name)}">0</strong></div><div class="bonus" id="bonus_${slug(name)}">+0</div></div>`)});
   });
-  D.rules.forEach(([title,text],i)=>$("rulesContent").insertAdjacentHTML("beforeend",`<article class="rule-card"><span>${String(i+1).padStart(2,"0")}</span><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></article>`));
   bindEvents();populateTestSkills();recalc();renderLibrary();renderRollHistory();
+  showView(viewFromHash(),{recordHistory:false});
 }
 function bindEvents(){
   document.querySelectorAll(".side-nav-btn").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
-  document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.jump)));
+  document.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.jump,{focusPanel:true})));
+  const tabs=document.querySelector('.side-nav');
+  const mobileTabs=window.matchMedia('(max-width: 860px)');
+  const orientTabs=()=>tabs.setAttribute('aria-orientation',mobileTabs.matches?'horizontal':'vertical');
+  orientTabs();mobileTabs.addEventListener('change',orientTabs);
+  tabs.addEventListener('keydown',event=>{
+    const buttons=[...tabs.querySelectorAll('[role="tab"]')];
+    const current=buttons.indexOf(event.target);if(current<0)return;
+    const nextKey=mobileTabs.matches?'ArrowRight':'ArrowDown';
+    const prevKey=mobileTabs.matches?'ArrowLeft':'ArrowUp';
+    let next;
+    if(event.key===nextKey)next=(current+1)%buttons.length;
+    else if(event.key===prevKey)next=(current+buttons.length-1)%buttons.length;
+    else if(event.key==='Home')next=0;
+    else if(event.key==='End')next=buttons.length-1;
+    else return;
+    event.preventDefault();showView(buttons[next].dataset.view);buttons[next].focus({preventScroll:true});
+  });
+  window.addEventListener('hashchange',()=>showView(viewFromHash(),{recordHistory:false}));
   document.querySelectorAll("[data-collapse]").forEach(b=>b.addEventListener("click",()=>{const el=$(b.dataset.collapse);el.hidden=!el.hidden;b.textContent=el.hidden?"+":"−";b.setAttribute("aria-expanded",String(!el.hidden))}));
   document.querySelectorAll(".content-tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".content-tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".content-pane").forEach(x=>x.classList.toggle("active",x.id===b.dataset.contentTab))}));
   document.addEventListener("input",handleInput);
@@ -111,13 +131,28 @@ function updateTestPreview(){if(!$("testPreview"))return;const t=testMath();$("t
 function rollPool(attrKey,skill="",extra=0,edge=0,target=null,label="Teste"){const dice=Math.max(1,Number(state.attributes[attrKey]||1)+Number(edge||0)),rolls=Array.from({length:dice},()=>Math.floor(Math.random()*20)+1),best=Math.max(...rolls),bonus=(skill?skillBonus(skill):0)+Number(extra||0),total=best+bonus,critical=best===20,success=target==null?null:(critical||total>=target);pushRoll({label,dice:`${dice}d20`,rolls,best,bonus,total,target,success,critical});return total}
 function rollTest(){const t=testMath();rollPool(t.attrKey,t.skill,t.combo,Number($("testEdge").value||0),t.target,t.skill||D.attributes[t.attrKey].label)}
 function rollSingleDie(sides){const value=Math.floor(Math.random()*sides)+1;pushRoll({label:`d${sides}`,dice:`1d${sides}`,rolls:[value],best:value,bonus:0,total:value,target:null,success:null,critical:value===sides})}
-function pushRoll(r){state.rollLog.unshift({...r,time:new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})});state.rollLog=state.rollLog.slice(0,30);const cls=r.success===true?" success":r.success===false?" fail":"";$("lastRoll").className=`last-roll${cls}`;$("lastRoll").innerHTML=`<span class="roll-label">${escapeHtml(r.label)}${r.target?` • alvo ${r.target}`:""}</span><strong class="roll-total">${r.total}</strong><span>${r.best}${r.bonus?` ${sign(r.bonus)}`:""}${r.critical?" • CRÍTICO":""}</span><div class="roll-dice">${r.rolls.join(" • ")}</div>`;renderRollHistory()}
+function pushRoll(r){state.rollLog.unshift({...r,time:new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})});state.rollLog=state.rollLog.slice(0,30);const cls=r.success===true?" success":r.success===false?" fail":"";$("lastRoll").className=`last-roll${cls}`;$("lastRoll").innerHTML=`<span class="roll-label">${escapeHtml(r.label)}${r.target?` • alvo ${r.target}`:""}</span><strong class="roll-total">${r.total}</strong><span>${r.best}${r.bonus?` ${sign(r.bonus)}`:""}${r.critical?" • CRÍTICO":""}</span><div class="roll-dice">${r.rolls.join(" • ")}</div>`;renderRollHistory();if(window.matchMedia("(max-width: 1180px)").matches)notice(`${r.label}: ${r.total}${r.critical?" · CRÍTICO":""}${r.success===true?" · sucesso":r.success===false?" · falha":""}`)}
 function renderRollHistory(){const box=$("rollHistory");if(!box)return;box.innerHTML=state.rollLog.length?state.rollLog.map(r=>`<div class="history-entry ${r.success===true?"success":r.success===false?"fail":""}"><div><strong>${escapeHtml(r.label)}</strong><small> ${r.dice} • ${r.rolls.join(", ")}</small></div><strong>${r.total}</strong><small>${r.time}</small></div>`).join(""):'<div class="empty-state">Nenhuma rolagem ainda nesta sessão.</div>'}
-function showView(id){
+function viewFromHash(){
+  const id=window.location.hash.slice(1);
+  return Object.hasOwn(VIEW_TITLES,id)?id:'overview';
+}
+function showView(id,{recordHistory=true,focusPanel=false}={}){
+  if(!Object.hasOwn(VIEW_TITLES,id))return;
   const target=$(id);if(!target)return;
-  document.querySelectorAll(".side-nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+  document.querySelectorAll('.view').forEach(panel=>{const active=panel===target;panel.hidden=!active;panel.classList.toggle('active',active);});
+  document.querySelectorAll(".side-nav-btn").forEach(button=>{
+    const active=button.dataset.view===id;
+    button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;
+  });
+  $('viewTitle').textContent=VIEW_TITLES[id];
+  document.title=VIEW_TITLES[id]+' | Fichas · Penta-Reign';
   if(id==="library")renderLibrary();
-  target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  if(recordHistory&&window.location.hash!=='#'+id){
+    try{window.history.pushState(null,'','#'+id);}catch(error){/* Local file URLs may restrict history changes. */}
+  }
+  if(focusPanel)target.focus({preventScroll:true});
+  window.scrollTo(0,0);
 }
 function notice(message){
   const box=$("sessionFeedback");if(!box)return;box.textContent=message;
@@ -156,7 +191,7 @@ function applyCharacter(ch){
   $("lpMax").value=ch.resources?.lpMax??25;$("lpCurrent").value=ch.resources?.lpCurrent??25;$("veilCurrent").value=ch.resources?.veilCurrent??"";$("will").value=ch.resources?.will??0;
   ["inventory","abilities","traits","notes"].forEach(k=>$(k).value=ch.text?.[k]||"");
   if(window.setPowerSession)window.setPowerSession(ch.powerSession);
-  renderGifts(giftInfo($("giftRoll").value).count||0,true);renderPortrait();recalc();markSaved();showView("overview");
+  renderGifts(giftInfo($("giftRoll").value).count||0,true);renderPortrait();recalc();markSaved();showView("overview",{focusPanel:true});
 }
 function loadCharacter(id){
   if(state.dirty&&!confirm("Abrir outra ficha e descartar as alterações ainda não salvas?"))return;
@@ -177,7 +212,7 @@ function resetForm(){
   $("level").value=1;$("exp").value=0;$("armor").value=0;$("lpMax").value=25;$("lpCurrent").value=25;$("veilCurrent").value=8;$("will").value=0;$("className").value="Livre";$("origin").value="Humano";$("kingdom").value="Reino de Ferro";
   document.querySelectorAll(".attr-input").forEach(el=>el.value=1);document.querySelectorAll(".skill-input").forEach(el=>el.value=0);
   if(window.setPowerSession)window.setPowerSession(null);
-  renderGifts(0,true);renderPortrait();renderRollHistory();$("lastRoll").className="last-roll empty";$("lastRoll").innerHTML="<span>Clique em um atributo, perícia ou dado.</span>";markDirty();recalc();showView("overview");
+  renderGifts(0,true);renderPortrait();renderRollHistory();$("lastRoll").className="last-roll empty";$("lastRoll").innerHTML="<span>Clique em um atributo, perícia ou dado.</span>";markDirty();recalc();showView("overview",{focusPanel:true});
 }
 function handlePortrait(e){const file=e.target.files?.[0];if(!file)return;if(file.size>6*1024*1024){alert("Escolha uma imagem de até 6 MB.");return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas"),size=320;c.width=size;c.height=size;const ctx=c.getContext("2d"),scale=Math.max(size/img.width,size/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);state.portrait=c.toDataURL("image/jpeg",.78);renderPortrait();markDirty()};img.src=reader.result};reader.readAsDataURL(file)}
 function renderPortrait(){const img=$("portraitImage"),fallback=$("portraitFallback");if(state.portrait){img.src=state.portrait;img.hidden=false;fallback.hidden=true}else{img.removeAttribute("src");img.hidden=true;fallback.hidden=false}}

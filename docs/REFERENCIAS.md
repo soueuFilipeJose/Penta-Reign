@@ -3,7 +3,9 @@
 ## Material recebido
 
 - `ThaalEmor_Gerenciador_Fichas_V3.zip`: estrutura, classes, escala numérica, fichas e comportamento anterior.
-- [Livro de Thaal’Emor no Canva](https://canva.link/0y5v70f09yelr1f), título **Sistema de Rpg do FiiL**, consultado em 8 de setembro de 2026. Design com 117 páginas na consulta. Usados os trechos de mitologia, reinos, famílias de dons, criação, ações, Véu e atributos.
+- [Livro de Penta-Reign no Canva](https://canva.link/0y5v70f09yelr1f), título **Sistema de Rpg do FiiL**, consultado em 8 de setembro de 2026. Design com 117 páginas na consulta. Usados os trechos de mitologia, reinos, famílias de dons, criação, ações, Véu e atributos.
+
+O nome do universo é **Penta-Reign**, conforme a correção do autor. Thaal’Emor permanece como o nome da entidade na narrativa de criação. Os identificadores internos de armazenamento da V4 foram preservados para manter acesso às fichas existentes.
 
 O livro está em desenvolvimento. O despertar menciona d20, mas apresenta faixas que fecham em 10; perícias e crítico diferem da revisão numérica da V3. A V4 mantém a tabela completa de d20 e a escala da V3. Não substitui o livro inteiro.
 

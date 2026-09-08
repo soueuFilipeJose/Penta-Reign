@@ -71,7 +71,7 @@ window.RPG_DATA = {
     "Potência":"+2 de dano por grau, dentro do teto fixo compartilhado da técnica V4. No alcance, escolha Mira OU Potência; a extensão tem teto por patamar."
   },
   rules:[
-    ["Escala universal","Bônus isolados continuam curtos, mas Thaal'Emor permite combos. Fontes diferentes — Classe, equipamento, habilidade, terreno e preparação — podem se acumular. Modificador de combo recomendado: até +6 além da Perícia."],
+    ["Escala universal","Bônus isolados continuam curtos, mas Penta-Reign permite combos. Fontes diferentes — Classe, equipamento, habilidade, terreno e preparação — podem se acumular. Modificador de combo recomendado: até +6 além da Perícia."],
     ["Teste de Atributo","Role 1d20 por ponto no Atributo e mantenha o maior. Vantagem adiciona +1d20; Desvantagem remove -1d20, sempre com mínimo de 1 dado."],
     ["Perícias e especialização","O limite por nível vale para pontos INVESTIDOS. Graus gratuitos de Classe se somam por cima, permitindo builds especializadas. Graus 1–4 valem +2 cada; a partir do 5º, cada grau adicional vale +1 para reduzir inflação sem matar combos."],
     ["Atributos","Todos começam em 1. Limite de criação: 4. Limite absoluto: 6. O pool de d20 já fornece grande parte da especialização do personagem."],
