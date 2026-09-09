@@ -1,90 +1,68 @@
-# Penta-Reign — Universo e Gerenciador de Fichas V4
+# Penta-Reign
 
-Site de Penta-Reign com apresentação do mundo, página própria de fichas e um construtor mecânico de técnicas de Dom. A interface usa verde profundo, vermelho e dourado, com uma cor para cada reino. Perícias, classes, retratos, rolagens, recursos e personagens da V4 foram preservados.
+Site do universo e gerenciador de personagens. A apresentação e as fichas ficam em páginas separadas. A cor padrão é **#473329**; o seletor da barra superior alterna entre Penta-Reign e os cinco reinos. Os títulos principais usam a **Cinzel Decorative** incluída no projeto, com sua licença.
 
-## Abrir e usar
+## Usar
 
-1. Baixe ou clone este repositório, mantendo a estrutura de pastas.
-2. Abra `index.html` no navegador. Também pode usar o Live Server do VS Code.
-3. Clique em **Fichas**, preencha a identidade e registre a rolagem de despertar em **Dons**.
-4. Dê nome e conceito a cada Dom. Adicione técnicas, escolha os parâmetros e confira orçamento e custo.
-5. Clique em **Salvar ficha**. Os personagens são guardados neste navegador.
+1. Abra `index.html` ou acesse a publicação do repositório.
+2. Clique em **Fichas** e escolha a classe e o nível.
+3. Em **Dons**, faça a primeira rolagem. Mantenha o resultado ou use a última tentativa.
+4. Com o despertar definido, distribua os pontos disponíveis em atributos e perícias.
+5. Crie as técnicas dos dons e clique em **Salvar ficha**.
 
-Não há instalação, npm, cadastro, servidor ou dependência externa para jogar. Dados, código e arte estão incluídos. O site não usa solicitações de rede para carregar suas regras.
+A barra superior rola até Início, Sobre os reinos e Sistema na apresentação. Fichas abre `fichas.html`. Os atalhos antigos para fichas continuam funcionando. Na ficha, as setas, Home e End navegam pelas abas, e **Regras dos dons** abre uma referência sem sair da edição.
 
-Para GitHub Pages, mantenha `index.html`, `fichas.html`, `css`, `js` e `assets` juntos na pasta publicada. Os caminhos são relativos e funcionam em subdiretórios. Não é necessário configurar redirecionamento de rotas. A publicação depende das configurações do repositório.
+## Criação de personagem
 
-## O que mudou
+- O local de nascimento é escolhido entre doze opções, além de Submundo para o Reino da Chuva.
+- O alinhamento é calculado pela dupla de maiores atributos. As 21 combinações têm nomes e descrições próprios. Fortitude + Dom resulta em **Pecador**.
+- Pontos disponíveis = base do despertar + ajuste da classe + progressão do nível.
+- Cada nível após o primeiro concede +1 ponto de perícia. Os níveis 2, 4, 6, 8 e 10 concedem +1 ponto de atributo.
+- A distribuição permanece bloqueada até manter a primeira rolagem ou concluir a segunda.
+- O saldo e os tetos são aplicados a botões, digitação, carregamento e importação. Mudanças de classe ou nível que invalidem a distribuição atual são recusadas até os pontos excedentes serem retirados.
 
-- **Início:** apresentação do Firmamento, cinco reinos e explicação do sistema.
-- **Navegação:** Início, Sobre os reinos e Sistema rolam apenas a apresentação. **Fichas** abre `fichas.html` na mesma aba do navegador.
-- **Ficha separada:** Identidade, Perícias, Dons, Combate & Dados, Anotações e Personagens são abas; somente a aba selecionada fica visível. Setas, Home e End navegam pelo seletor de abas. O histórico do navegador permite voltar à aba anterior.
-- **Referência:** o botão **Regras dos dons** abre uma janela dentro da ficha. Fechar ou pressionar Escape retorna à edição.
-- **Links antigos:** atalhos como `index.html#ficha`, `#gifts` e `#library` redirecionam para a aba correspondente em `fichas.html`.
-- **Dons:** conceito separado das técnicas. Orçamento por patamar, limites de dados, custo em Véu, alcance, alvos, duração, ações, condições, resistência, utilidades e invocação.
-- **Mesa:** ativar desconta Véu e ação. O painel acompanha turnos, concentração, manutenção e comando da invocação.
-- **Combos:** fontes distintas continuam somando no acerto, até +6. Potência entra no teto fixo compartilhado. Técnicas diferentes podem repetir o mesmo tipo de efeito.
-- **Personagens:** migração de V3/V2 na mesma origem do navegador, preservando os registros anteriores.
-- **Portabilidade:** importação e exportação de fichas JSON. Importar abre uma cópia, que deve ser salva.
-- **Impressão:** inclui atributos, perícias, dons e anotações, abrindo os painéis da ficha ao imprimir.
+As tabelas e as diferenças em relação ao livro estão em [Criação de personagens](docs/CRIACAO-PERSONAGENS.md). O livro tem progressões incompletas e escolhas entre pontos e talentos; a ficha usa uma progressão padronizada de investimento, sem somar novamente os ganhos de atributos e perícias dos textos de classe. Os graus de especialização existentes continuam separados.
 
-## Trazer fichas da V3
+## Despertar e salvamento
 
-A migração automática depende da **mesma origem**: protocolo, domínio e porta. Dados de outro navegador, dispositivo, endereço, porta ou arquivo local podem não estar disponíveis. O armazenamento em `file://` varia entre navegadores.
+O personagem tem até duas rolagens. Manter a primeira encerra a decisão; a segunda substitui a anterior e é definitiva.
 
-- Se a V3 estava publicada, substitua os arquivos no mesmo endereço.
-- A V4 copia `thaalemor_characters_v3`, ou V2 se não houver V3, para `thaalemor_characters_v4`. A cópia antiga não é modificada.
-- Se mudar de endereço, abra temporariamente a V4 na origem anterior, exporte os personagens como JSON e importe no novo endereço.
-- Descrições antigas são preservadas. Elas não viram técnicas válidas automaticamente: crie os parâmetros para cada habilidade.
-- Reduzir a quantidade de dons os arquiva. Eles reaparecem se a quantidade aumentar e continuam no JSON.
-- Técnicas que excedem os espaços são mantidas como rascunhos, com uso bloqueado.
-- Falta de espaço e JSON corrompido não provocam substituição silenciosa dos dados existentes.
-- Salve e exporte cópias antes de limpar o navegador.
+Cada decisão é gravada junto do rascunho antes de ser aplicada na tela. O rascunho é retomado ao reabrir a ficha. O registro de despertar é separado da lista de personagens, preserva o resultado mais recente e é compartilhado por cópias importadas que mantêm a mesma identidade de despertar. Importar um arquivo antigo não devolve tentativas. Resultados recebidos sem histórico local são considerados definitivos.
 
-## Criar e usar técnicas
+O navegador precisa permitir armazenamento para registrar rolagens. Falhas de gravação bloqueiam a decisão; dados existentes não são substituídos por um registro vazio. A coordenação entre abas usa Web Locks quando disponível.
 
-1. Escolha Dano, Cura, Barreira, Controle, Utilidade ou Invocação.
-2. Preencha nome e manifestação. Escolha alcance, ação e parâmetros.
-3. A soma de PP e todos os tetos precisam ser respeitados simultaneamente. Rascunhos inválidos podem ser salvos, mas não usados.
-4. Para dano contra um alvo, abra **Acerto e combinações** e informe Defesa, situação e fontes de combo.
-5. **Usar técnica** gasta Véu e ação mesmo quando o ataque erra.
-6. Em **Combate & Dados**, avance o turno e sustente ou encerre a concentração. Avançar não recupera Véu.
-7. Registre ali ações gastas com armas ou habilidades fora do construtor.
+Fichas antigas são preservadas. Distribuições incompatíveis são ajustadas aos limites, com uma cópia dos valores recebidos em **Registros preservados**. Nascimentos livres e alinhamentos antigos também podem ser consultados ali. O botão de exportação leva esses registros junto do personagem.
 
-Resistências, posicionamento, linha de efeito, condições, barreiras, LP da invocação e recursos de outros personagens são acompanhados pela mesa. O botão de concentração deve ser usado após sofrer dano; não detecta dano automaticamente.
+Os personagens ficam **neste navegador e neste endereço**. A migração automática exige a mesma origem: protocolo, domínio e porta. Para trocar de navegador, dispositivo ou endereço, exporte JSON e importe no destino. O comportamento do armazenamento de arquivos locais varia entre navegadores; para continuidade previsível, use o mesmo endereço HTTP/HTTPS.
 
-## Escopo da revisão
+## Técnicas e combate
 
-É uma **proposta para teste em mesa**, não uma afirmação de equilíbrio definitivo. O motor confere parâmetros e custos, mas não conhece a coerência narrativa nem a identidade real das fontes de combo.
+Conceitos permanecem livres; técnicas têm limites de dados, dano, alcance, alvos, duração, ações e Véu. O construtor desconta recursos e acompanha turnos e concentração. A mesa acompanha resistências, linha de efeito, condições, recursos de alvos e coerência do conceito.
 
-As classes, itens, caminhos e rituais do livro não foram integralmente recalculados. A V4 mantém a escala da V3 para perícias, atributos e crítico, que diverge de trechos do livro. Esses outros conteúdos continuam como consulta manual e precisam ser compatibilizados pela mesa. Bônus do texto antigo não devem ultrapassar os limites das técnicas V4.
-
-Não há sincronização online nem proteção contra edição manual do código ou da ficha.
+Consulte [Dons e técnicas](docs/DONS-V4.md) para custos e exemplos. Classes, itens e rituais não têm todas as suas habilidades automatizadas. A progressão de pontos e o construtor são regras para teste em mesa, não uma comprovação de equilíbrio definitivo de todo o livro.
 
 ## Organização
 
-- `index.html`: apresentação do universo, reinos e sistema.
-- `fichas.html`: área exclusiva de fichas, com abas e referência de regras.
-- `css/styles.css`: base da V3; `css/v4.css`: componentes da V4; `css/penta-reign.css`: identidade visual e navegação atual.
-- `js/data.js`: atributos, perícias e classes.
-- `js/power-engine.js`: motor independente de limites e custos.
-- `js/app.js`: ficha, recursos, rolagens e salvamento.
-- `js/powers-ui.js`: construtor e uso das técnicas.
-- `js/rules.js`: referência de regras compartilhada pelas duas páginas, sem acessar personagens.
-- `js/site.js`: navegação da apresentação, compatibilidade de links antigos e janela de regras.
-- `assets/firmamento.png`: arte incluída.
-- `data/regras-v3.json`: referência anterior, não executada.
-- `data/regras-v4.json`: configuração estruturada da revisão.
-- `docs/DONS-V4.md`: regras e exemplos.
-- `docs/REFERENCIAS.md`: fontes e decisões.
-- `tests/`: testes do motor, da migração e da navegação entre apresentação e fichas.
+- `index.html` e `fichas.html`: apresentação e gerenciador.
+- `js/data.js`: classes, atributos, perícias e base do despertar.
+- `js/character-engine.js`: orçamentos, alinhamentos, locais e validação de investimentos.
+- `js/creation-store.js`: registro de despertar e rascunhos.
+- `js/creation-ui.js`: decisões de rolagem e retomada do personagem.
+- `js/app.js`: ficha, dados e lista de personagens.
+- `js/power-engine.js`, `js/powers-ui.js` e `js/rules.js`: técnicas, combate e referência.
+- `js/theme.js` e `css/realms.css`: temas e tipografia.
+- `assets/fonts/OFL.txt`: licença da Cinzel Decorative.
 
-## Verificações
+Para GitHub Pages, mantenha as páginas e as pastas de recursos juntas na pasta publicada. Os caminhos relativos funcionam no subdiretório do repositório. Não há dependências de rede, instalação de pacotes ou etapa de compilação para usar o site. As configurações do repositório determinam a publicação.
 
-Com Node.js instalado, na pasta do projeto:
+## Verificação
+
+Com Node.js, execute:
 
 ```sh
 node --test tests/*.test.cjs
 ```
 
-Os 19 testes cobrem custos, dano dividido, crítico, duração, ações, combos, valores inválidos, migração sem perda dos registros antigos, preservação de rascunhos ao trocar de aba, links antigos e carregamento independente das regras. HTML, IDs, referências locais e sintaxe dos scripts também foram conferidos. Não foi realizado teste visual em navegador nesta entrega.
+Os testes verificam limites de pontos, todas as classes e níveis, alinhamentos, duas tentativas, persistência, importação, migração, navegação e limites dos dons. A validação não inclui teste visual em navegador.
+
+Não há sincronização por servidor ou mecanismo de autenticação: quem altera o código ou apaga o armazenamento controla a própria cópia local.

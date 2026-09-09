@@ -1,6 +1,6 @@
-# Dons V4 — criatividade com grandezas definidas
+# Dons — criatividade com grandezas definidas
 
-Proposta para teste em mesa. O cenário e o custo base de 4 Véu vêm do livro; orçamento e limites são novos. A V4 mantém a escala de atributos, perícias e crítico que já existia na V3.
+Proposta para teste em mesa. O cenário e o custo base de 4 Véu vêm do livro; orçamento e limites são novos. A ficha mantém uma escala curta de atributos, perícias e crítico.
 
 ## Conceito e técnica
 
@@ -16,7 +16,7 @@ O **Dom** define o conceito: metal, sangue, som, reflexos, gravidade ou outra id
 
 Cada técnica tem seu próprio orçamento completo. Dons adicionais ampliam opções, sem multiplicar ações ou dano por ativação. Técnicas excedentes são preservadas como rascunhos.
 
-**Mudança em relação ao livro:** a V4 permite repetir o mesmo tipo de efeito em técnicas diferentes. Cada uma ocupa espaço e paga seus parâmetros. Os seis efeitos mecânicos do construtor substituem ali a restrição de repetição das quatro categorias de habilidades do livro.
+**Mudança em relação ao livro:** a ficha permite repetir o mesmo tipo de efeito em técnicas diferentes. Cada uma ocupa espaço e paga seus parâmetros. Os seis efeitos mecânicos do construtor substituem ali a restrição de repetição das quatro categorias de habilidades do livro.
 
 ## Patamares e custos
 
@@ -88,7 +88,7 @@ Potência fornece +2 de dano por grau, somado ao fixo comprado, dentro do teto c
 
 Para alcance, escolha Mira (+3 m/grau) **ou** Potência (+2 m/grau). Extensão máxima +6 m por patamar, somente a partir de alcance base 6 m. Não aumenta raio, alvos, distância de teleporte, luz, percepção interna, voo ou invocação.
 
-Foco, Memória e Canalização não criam alvos ou técnicas gratuitos na V4. Os graus de Classe continuam somando ao investimento na escala da V3. Bônus de outros textos precisam caber nos limites da técnica ou receber uma adaptação de mesa.
+Foco, Memória e Canalização não criam alvos ou técnicas gratuitos nesta ficha. Os graus de Classe continuam somando ao investimento na escala de perícias da ficha. Bônus de outros textos precisam caber nos limites da técnica ou receber uma adaptação de mesa.
 
 ## Alvos, área e duração
 

@@ -6,7 +6,7 @@
   let lastResult='';
   const categories={Primordial:'Criação e controle de matéria e elementos.',Vitálio:'Transformações do corpo e da energia vital.',Synithar:'Pensamento, percepção e consciência.',Occultus:'Forças ocultas, espíritos e manifestações arcanas.',Phantaso:'Ilusões, sentidos e aparências.',Sanátio:'Restauração, proteção e fluxo vital.',Summanu:'Invocação e vínculo com seres e presenças.',Indilus:'Manifestações singulares. Escolha efeitos mecânicos delimitados.',Proibido:'Exige acordo explícito da mesa. A natureza proibida não remove os limites de uma técnica.'};
   const context=()=>({level:level(),potency:effectiveSkillRank('Potência'),mira:effectiveSkillRank('Mira'),arcana:effectiveSkillRank('Manipulação Arcana')});
-  const count=()=>giftInfo($('giftRoll').value).count||0;
+  const count=()=>budgets().ready?(giftInfo(state.awakening.result).count||0):0;
   const technique=(g,i)=>state.gifts[g]?.techniques?.[i];
   const options=(values,selected,label=v=>String(v))=>values.map(v=>`<option value="${escapeHtml(v)}" ${String(v)===String(selected)?'selected':''}>${escapeHtml(label(v))}</option>`).join('');
   const select=(g,i,t,key,label,values,getLabel)=>`<label>${label}<select data-tech="${g}:${i}" data-prop="${key}">${options(values,t[key],getLabel)}</select></label>`;
@@ -77,11 +77,11 @@
     state.gifts.forEach(g=>{if(!Array.isArray(g.techniques))g.techniques=[];});
     if(!force&&Number(box.dataset.count??-1)===n)return;
     box.dataset.count=n;
-    if(!n){box.innerHTML=`<div class="empty-state">${$('giftRoll').value?'Mundano excepcional: nenhum dom ativo. Seus atributos e perícias fazem a diferença.':'Registre o resultado do d20 para descobrir os dons e começar a criar técnicas.'}</div>${state.gifts.length?'<p class="archived-note">Seus dons anteriores estão arquivados na ficha. Eles reaparecem se a quantidade voltar a aumentar e continuam no JSON.</p>':''}`;return;}
+    if(!n){box.innerHTML=`<div class="empty-state">${$('giftRoll').value?'Mundano excepcional: nenhum dom ativo. Seus atributos e perícias fazem a diferença.':'Defina seu despertar para descobrir os dons e começar a criar técnicas.'}</div>${state.gifts.length?'<p class="archived-note">Seus dons anteriores estão arquivados na ficha. Eles reaparecem se a quantidade voltar a aumentar e continuam no JSON.</p>':''}`;return;}
     box.innerHTML=state.gifts.slice(0,n).map((g,gi)=>{
       const limit=P.slots(n,gi);
       return `<article class="gift-card"><div class="gift-card-head"><strong>Dom ${gi+1}</strong><span>${g.techniques.length} / ${limit} técnicas</span></div><div class="gift-concept"><label>Nome do dom<input data-gift="${gi}" data-field="name" value="${escapeHtml(g.name)}" placeholder="Ex.: Memória dos espelhos"></label><label>Categoria<select data-gift="${gi}" data-field="type">${options(D.giftTypes,g.type)}</select></label><label class="concept-description">Conceito e limites narrativos<textarea data-gift="${gi}" data-field="description" rows="3" placeholder="O que seu dom manipula? O que ele não consegue fazer?">${escapeHtml(g.description)}</textarea></label></div><p class="gift-category-help" id="category_${gi}"></p><label class="check-label" id="agreement_label_${gi}" ${g.type!=='Proibido'?'hidden':''}><input type="checkbox" data-agreement="${gi}" ${g.masterAgreement?'checked':''}>A mesa aceitou a origem, os riscos e o uso deste Dom Proibido.</label>
-      ${state.sourceVersion!=='4.0'&&!g.techniques.length?'<p class="archived-note">Descrição da versão anterior preservada. Transforme cada habilidade em uma técnica para conferir seus parâmetros.</p>':''}
+      ${state.sourceVersion!=='4.0'&&!g.techniques.length?'<p class="archived-note">Descrição recebida preservada. Transforme cada habilidade em uma técnica para conferir seus parâmetros.</p>':''}
       <div class="tech-list">${g.techniques.map((t,i)=>techniqueHTML(gi,i,t)).join('')}</div>
       <div class="tech-presets" aria-label="Adicionar técnica ao Dom ${gi+1}">${Object.entries(P.effects).map(([key,label])=>`<button type="button" data-add-tech="${gi}" data-preset="${key}" ${g.techniques.length>=limit?'disabled':''}>+ ${label}</button>`).join('')}</div><p class="help">${limit} espaços neste despertar. Alterar a aparência é livre; mudar o efeito em combate exige uma técnica preparada. Técnicas excedentes ficam como rascunho, sem uso.</p></article>`;
     }).join('')+(state.gifts.length>n?'<p class="archived-note">Os dons além da quantidade atual estão arquivados. Nenhuma descrição ou técnica foi apagada.</p>':'');
@@ -205,7 +205,7 @@
   function setupFiles(){
     $('exportCharacter').addEventListener('click',()=>{
       const ch=collect(),blob=new Blob([JSON.stringify(ch,null,2)],{type:'application/json'}),a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);a.download=(slug(ch.identity.name)||'personagem')+'-penta-reign-v4.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);notice('Ficha exportada com todos os dons, incluindo rascunhos e arquivos.');
+      a.href=URL.createObjectURL(blob);a.download=(slug(ch.identity.name)||'personagem')+'-penta-reign.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);notice('Ficha exportada com todos os dons, incluindo rascunhos e arquivos.');
     });
     $('importCharacter').addEventListener('click',()=>$('importInput').click());
     $('importInput').addEventListener('change',async e=>{
@@ -216,7 +216,7 @@
         if(!ch||Array.isArray(ch)||typeof ch.identity!=='object'||!ch.identity||!ch.attributes||!ch.resources)throw new Error('Este arquivo não parece uma ficha Penta-Reign.');
         if(ch.gifts&&(!Array.isArray(ch.gifts)||ch.gifts.length>20||ch.gifts.some(g=>!g||typeof g!=='object'||(g.techniques&&(!Array.isArray(g.techniques)||g.techniques.length>40)))))throw new Error('A estrutura dos dons neste arquivo é inválida.');
         if(state.dirty&&!confirm('Importar outra ficha e descartar as alterações não salvas?'))return;
-        ch.id=makeId();applyCharacter(ch);markDirty();notice('Ficha importada como cópia. Confira e salve neste navegador.');
+        const imported=window.prepareImportedCharacter(ch);applyCharacter(imported);markDirty();notice('Ficha importada como cópia. Confira e salve neste navegador.');
       }catch(error){notice(error instanceof SyntaxError?'JSON inválido. Sua ficha atual foi preservada.':error.message);}
       finally{e.target.value='';}
     });

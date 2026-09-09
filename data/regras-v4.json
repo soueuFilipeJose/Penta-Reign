@@ -1,6 +1,5 @@
 {
-  "version": "4.0",
-  "status": "Proposta para teste em mesa; mantém a escala numérica da V3.",
+  "status": "Regras de técnicas para teste em mesa; escala curta de modificadores.",
   "source": "https://canva.link/0y5v70f09yelr1f",
   "tiers": [
     {
@@ -235,5 +234,6 @@
     "critical_damage": false
   },
   "legacy_rules_reference": "regras-v3.json",
-  "storage_key": "thaalemor_characters_v4"
+  "storage_key": "thaalemor_characters_v4",
+  "creation_reference": "docs/CRIACAO-PERSONAGENS.md"
 }

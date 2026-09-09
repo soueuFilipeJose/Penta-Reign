@@ -52,9 +52,9 @@ window.RPG_DATA = {
     "Samurai": {veilDivisor:3, freeRanks:{"Força":1,"Mira":1}, flatMods:{}, traits:["Disciplina de duelo: postura, arma, alvo marcado e graus de Classe podem ser encadeados para criar picos de eficiência."]}
   },
   giftTable: [
-    {min:1,max:3,count:0,attributes:6,skills:8,label:"Mundano Excepcional"},
-    {min:4,max:14,count:1,attributes:5,skills:7,label:"Dom Singular"},
-    {min:15,max:17,count:2,attributes:5,skills:6,label:"Duplo Despertar"},
+    {min:1,max:3,count:0,attributes:6,skills:7,label:"Mundano Excepcional"},
+    {min:4,max:14,count:1,attributes:5,skills:6,label:"Dom Singular"},
+    {min:15,max:17,count:2,attributes:5,skills:5,label:"Duplo Despertar"},
     {min:18,max:19,count:3,attributes:4,skills:5,label:"Tríade Desperta"},
     {min:20,max:20,count:4,attributes:4,skills:4,label:"Despertar Supremo"}
   ],
@@ -68,18 +68,20 @@ window.RPG_DATA = {
     "Vigor":"+2m de deslocamento por grau efetivo.",
     "Canalização":"Pode ampliar alvos de Dons multi-alvo conforme a habilidade.",
     "Manipulação Arcana":"Pode reduzir conjuração em 1 turno quando aplicável.",
-    "Potência":"+2 de dano por grau, dentro do teto fixo compartilhado da técnica V4. No alcance, escolha Mira OU Potência; a extensão tem teto por patamar."
+    "Potência":"+2 de dano por grau, dentro do teto fixo compartilhado da técnica. No alcance, escolha Mira OU Potência; a extensão tem teto por patamar."
   },
   rules:[
     ["Escala universal","Bônus isolados continuam curtos, mas Penta-Reign permite combos. Fontes diferentes — Classe, equipamento, habilidade, terreno e preparação — podem se acumular. Modificador de combo recomendado: até +6 além da Perícia."],
     ["Teste de Atributo","Role 1d20 por ponto no Atributo e mantenha o maior. Vantagem adiciona +1d20; Desvantagem remove -1d20, sempre com mínimo de 1 dado."],
     ["Perícias e especialização","O limite por nível vale para pontos INVESTIDOS. Graus gratuitos de Classe se somam por cima, permitindo builds especializadas. Graus 1–4 valem +2 cada; a partir do 5º, cada grau adicional vale +1 para reduzir inflação sem matar combos."],
-    ["Atributos","Todos começam em 1. Limite de criação: 4. Limite absoluto: 6. O pool de d20 já fornece grande parte da especialização do personagem."],
+    ["Atributos","Todos começam em 1. Os pontos adicionais dependem do despertar, da classe e do nível. Nenhum campo pode consumir mais que o saldo disponível. Limite por atributo: 4 no nível 1, 5 até o nível 4 e 6 depois."],
+    ["Progressão","Após o nível 1, cada nível concede +1 ponto de perícia. Níveis pares concedem +1 ponto de atributo. A ficha adota esta progressão padronizada, além dos ajustes iniciais de classe, para manter todas as classes na mesma curva de investimento."],
+    ["Despertar","São permitidas até duas rolagens de d20 por personagem. A primeira pode ser mantida; a segunda substitui a anterior definitivamente. Só depois dessa decisão é possível distribuir pontos."],
     ["Defesa","10 + Fortitude + bônus total da Perícia Defesa + Armadura. Armaduras: nenhuma +0, leve +1, média +2, pesada +3."],
     ["Crítico","20 natural: role os dados de dano duas vezes e some modificadores uma única vez. Evite multiplicar modificadores fixos."],
-    ["Véu","Bruxos e Sábios: 1/2 dos LP. Demais Classes: 1/3 dos LP. Técnicas V4: 4 + teto((PP − 6) / 3), mínimo 4 de Véu. A manutenção custa 1 Véu e uma ação bônus por ciclo adicional."],
+    ["Véu","Bruxos e Sábios: 1/2 dos LP. Demais Classes: 1/3 dos LP. Técnicas: 4 + teto((PP − 6) / 3), mínimo 4 de Véu. A manutenção custa 1 Véu e uma ação bônus por ciclo adicional."],
     ["Movimento","Base 10m. Cada grau efetivo de Vigor adiciona +2m."],
-    ["Mira e Potência","Na V4, cada técnica escolhe Mira OU Potência para ampliar seu alcance (até +6m por patamar). Potência soma +2 de dano por grau ao total compartilhado, limitado a +2 por patamar junto dos outros bônus fixos."],
+    ["Mira e Potência","Cada técnica escolhe Mira OU Potência para ampliar seu alcance (até +6m por patamar). Potência soma +2 de dano por grau ao total compartilhado, limitado a +2 por patamar junto dos outros bônus fixos."],
     ["Dons — d20 completo","1–3: 0 Dons; 4–14: 1; 15–17: 2; 18–19: 3; 20: 4. Quanto mais Dons, menor o orçamento mundano inicial."],
     ["Economia de ações","Referência ficha: 1 Ação Principal + 1 Ação Bônus + Movimento + 1 Reação por ciclo. Ações/turnos extras devem vir de habilidades específicas e raras."],
     ["Condições","Leve: -1; moderada: -2; severa: -3 ou Desvantagem. Estados fortes devem alterar ações/movimento diretamente em vez de empilhar penalidades -5/-10."],

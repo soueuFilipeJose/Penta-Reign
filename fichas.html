@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#091b17">
+  <meta name="theme-color" content="#473329">
+  <script src="js/theme.js"></script>
   <title>Fichas | Penta-Reign</title>
   <meta name="description" content="Crie e gerencie personagens de Penta-Reign. Identidade, perícias, técnicas de dom, rolagens e fichas salvas.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/v4.css">
   <link rel="stylesheet" href="css/penta-reign.css">
+  <link rel="stylesheet" href="css/realms.css">
 </head>
 <body class="character-page">
   <a class="skip-link" href="#conteudo">Ir para a ficha</a>
@@ -23,6 +25,9 @@
       <a href="index.html#sistema" data-section="sistema">Sistema</a>
       <a class="nav-cta active" href="fichas.html" aria-current="page">Fichas <span aria-hidden="true">↗</span></a>
     </nav>
+    <label class="theme-picker" for="realmTheme"><span class="theme-swatch" aria-hidden="true"></span><span>Tema</span><select id="realmTheme" aria-label="Tema visual do site">
+      <option value="penta">Penta-Reign</option><option value="ferro">Ferro</option><option value="chuva">Chuva</option><option value="fogo">Fogo</option><option value="trigo">Trigo</option><option value="eco">Eco</option>
+    </select></label>
   </header>
   <noscript><p class="no-script">Ative o JavaScript para criar, rolar e salvar suas fichas.</p></noscript>
   <div class="app-shell" id="ficha">
@@ -58,6 +63,11 @@
         <div class="head-actions"><span id="saveState" class="save-state">Alterações locais</span><button class="ghost" type="button" data-open-rules>Regras dos dons</button><button id="printSheet" class="ghost" type="button">Imprimir / PDF</button></div>
       </header>
 
+      <div class="creation-guide">
+        <p id="creationProgress">Escolha classe e nível · defina seu despertar · distribua os pontos</p>
+        <div id="allocationGate" class="allocation-gate"><span>Defina seus dons antes de distribuir atributos e perícias.</span><button type="button" data-jump="gifts">Definir despertar</button></div>
+        <details><summary>Como seus pontos são calculados</summary><p id="budgetBreakdown"></p><p class="help">A cada nível após o primeiro: +1 ponto de perícia. Nos níveis 2, 4, 6, 8 e 10: +1 ponto de atributo. Os graus de especialização da classe são separados do investimento. Antes de reduzir nível ou mudar para uma classe com menos pontos, remova os investimentos excedentes.</p></details>
+      </div>
       <div id="warnings" class="warnings" aria-live="polite"></div>
 
       <section id="overview" class="view active" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
@@ -70,14 +80,16 @@
               <label>Origem<select id="origin"></select></label>
               <label>Classe<select id="className"></select></label>
               <label>Caminho<input id="path" placeholder="Caminho / especialização"></label>
-              <label>Nível<input id="level" type="number" min="1" max="10" value="1"></label>
+              <label>Nível<select id="level"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
               <label>EXP<input id="exp" type="number" min="0" value="0"></label>
-              <label>Alinhamento<input id="alignment" placeholder="Livre"></label>
+              <label>Alinhamento<input id="alignment" readonly aria-describedby="alignmentDescription" value="Aguardando despertar"></label>
               <label>Reino de origem<select id="kingdom"></select></label>
-              <label>Local de origem<input id="location" placeholder="Ex.: Submundo"></label>
+              <label>Local de nascimento<select id="location"><option value="">Escolha o local</option></select></label>
               <label>Idade<input id="age" type="number" min="0"></label>
               <label>Gênero<input id="gender" placeholder="Livre"></label>
             </div>
+            <p id="alignmentDescription" class="alignment-description"></p>
+            <details id="legacyCreation" class="legacy-creation" hidden><summary>Registros preservados</summary><p id="legacyCreationText"></p></details>
             <div id="classSummary" class="class-summary"></div>
           </div>
         </section>
@@ -100,7 +112,7 @@
 
         <section class="panel attributes-panel">
           <div class="section-head split"><div><span class="kicker">ATRIBUTOS</span><h2>Clique para rolar</h2><p>Cada ponto adiciona um d20 ao pool e mantém o maior.</p></div><span id="attributeCounter" class="counter"></span></div>
-          <div id="attributes" class="attribute-wheel"></div>
+          <fieldset id="attributeAllocation" class="allocation-fields" disabled><legend class="sr-only">Distribuir pontos em atributos</legend><div id="attributes" class="attribute-wheel"></div></fieldset>
         </section>
 
         <div class="overview-grid">
@@ -119,14 +131,15 @@
         <section class="panel">
           <div class="section-head split"><div><span class="kicker">PERÍCIAS</span><h2>Treine e role sem sair da ficha</h2><p>Os graus investidos respeitam o limite do nível; graus de Classe acumulam por cima.</p></div><span id="skillCounter" class="counter"></span></div>
           <div class="legend"><span><i class="dot invested"></i> Investido</span><span><i class="dot class"></i> Classe</span><span><i class="dot total"></i> Bônus final</span></div>
-          <div id="skillsContainer" class="skills-container"></div>
+          <fieldset id="skillAllocation" class="allocation-fields" disabled><legend class="sr-only">Distribuir pontos em perícias</legend><div id="skillsContainer" class="skills-container"></div></fieldset>
         </section>
       </section>
 
       <section id="gifts" class="view" role="tabpanel" aria-labelledby="tab-gifts" tabindex="0" hidden>
         <section class="panel gift-control">
-          <div class="section-head split"><div><span class="kicker">DONS</span><h2>Despertar do personagem</h2><p>A rolagem define quantos Dons surgem e o orçamento mundano inicial.</p></div><button id="rollGifts" class="primary" type="button">Rolar d20</button></div>
-          <div class="gift-roll-row"><label>Resultado<input id="giftRoll" type="number" min="1" max="20" placeholder="1–20"></label><div class="metric"><span>Dons</span><strong id="giftCount">—</strong></div><div class="metric"><span>Atributos</span><strong id="attributeBudget">—</strong></div><div class="metric"><span>Perícias</span><strong id="skillBudget">—</strong></div></div>
+          <div class="section-head split"><div><span class="kicker">DONS</span><h2>Despertar do personagem</h2><p>O destino oferece duas chances. Quando escolher uma, a outra fica para trás.</p></div><button id="rollGifts" class="primary" type="button">Rolar o despertar</button></div>
+          <div class="gift-roll-row"><div class="awakening-result"><span>Resultado do d20</span><output id="giftRoll" aria-label="Resultado do despertar" aria-live="polite"></output></div><div class="metric"><span>Dons</span><strong id="giftCount">—</strong></div><div class="metric"><span>Atributos</span><strong id="attributeBudget">—</strong></div><div class="metric"><span>Perícias</span><strong id="skillBudget">—</strong></div></div>
+          <p id="awakeningStatus" class="awakening-status" role="status"></p><button type="button" class="ghost" id="keepGiftRoll" hidden>Manter resultado e distribuir pontos</button>
           <div class="gift-table-mini"><span><b>1–3</b> 0</span><span><b>4–14</b> 1</span><span><b>15–17</b> 2</span><span><b>18–19</b> 3</span><span><b>20</b> 4</span></div>
         </section>
         <div id="powerWorkbench" class="panel"></div><div id="giftsContainer" class="gifts-grid"></div>
@@ -168,7 +181,7 @@
       </section>
 
       <section id="library" class="view" role="tabpanel" aria-labelledby="tab-library" tabindex="0" hidden>
-        <section class="panel"><div class="section-head"><div><span class="kicker">PERSONAGENS</span><h2>Biblioteca local</h2><p>Seus personagens ficam neste navegador. Fichas V3 e V2 são copiadas na primeira abertura. Use JSON para levar a ficha a outro navegador ou endereço.</p></div></div><div class="library-tools"><button type="button" id="exportCharacter">Exportar ficha JSON</button><button type="button" id="importCharacter">Importar ficha JSON</button><input type="file" id="importInput" accept=".json,application/json" hidden></div><div id="savedCharacters" class="cards"></div></section>
+        <section class="panel"><div class="section-head"><div><span class="kicker">PERSONAGENS</span><h2>Biblioteca local</h2><p>Seus personagens ficam neste navegador. Fichas antigas são recuperadas na primeira abertura. Use JSON para levar a ficha a outro navegador ou endereço.</p></div></div><div class="library-tools"><button type="button" id="exportCharacter">Exportar ficha JSON</button><button type="button" id="importCharacter">Importar ficha JSON</button><input type="file" id="importInput" accept=".json,application/json" hidden></div><div id="savedCharacters" class="cards"></div></section>
       </section>
 
     </main>
@@ -185,23 +198,26 @@
 
   <dialog id="rulesDialog" class="rules-dialog" aria-labelledby="rulesTitle">
     <div class="dialog-head">
-      <div><span class="eyebrow">REFERÊNCIA DE MESA · V4</span><h2 id="rulesTitle">Dons com limites. Ideias livres.</h2></div>
+      <div><span class="eyebrow">REFERÊNCIA DE MESA</span><h2 id="rulesTitle">Dons com limites. Ideias livres.</h2></div>
       <button type="button" class="ghost" data-close-rules autofocus>Fechar</button>
     </div>
-    <details class="rulebook" id="regras-dons" open><summary><span>Revisão de dons · V4 para teste em mesa</span><span>Consultar limites e exemplos +</span></summary><div id="powerRules"></div></details>
-    <details class="rulebook"><summary>Regras da ficha e diferenças em relação ao livro +</summary><p class="rule-intro">Esta ficha mantém a escala reduzida da V3 para atributos, perícias, crítico e especializações. O livro contém valores diferentes e trechos em desenvolvimento. Os dons abaixo usam a revisão V4; classes, itens e rituais específicos continuam registrados para consulta e precisam ser compatibilizados pela mesa.</p><div id="rulesContent" class="rules-grid"></div></details>
+    <details class="rulebook" id="regras-dons" open><summary><span>Regras dos dons e exemplos</span><span>Consultar limites e exemplos +</span></summary><div id="powerRules"></div></details>
+    <details class="rulebook"><summary>Regras da ficha +</summary><p class="rule-intro">Consulte os testes, recursos e limites usados pela ficha. Habilidades de classe, equipamentos e rituais devem respeitar os orçamentos das técnicas quando produzirem os mesmos efeitos.</p><div id="rulesContent" class="rules-grid"></div></details>
   </dialog>
   <div id="sessionFeedback" role="status" aria-live="polite"></div>
   <footer class="site-footer">
     <a href="index.html#inicio">PENTA-REIGN</a>
-    <p>Um mundo criado por Filipe · Revisão de dons V4 para teste em mesa</p>
+    <p>Um mundo criado por Filipe · Dons, escolhas e consequências</p>
     <a href="index.html#universo">Conhecer os reinos</a>
   </footer>
   <script src="js/data.js"></script>
   <script src="js/power-engine.js"></script>
+  <script src="js/character-engine.js"></script>
+  <script src="js/creation-store.js"></script>
   <script src="js/rules.js"></script>
   <script src="js/app.js"></script>
   <script src="js/powers-ui.js"></script>
+  <script src="js/creation-ui.js"></script>
   <script src="js/site.js"></script>
 </body>
 </html>
